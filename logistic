@@ -1,0 +1,39 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.linear_model import LogisticRegression
+
+# Load Iris dataset
+iris = load_iris()
+X = iris.data[:, 2:4]  # Petal length and petal width
+y = (iris.target == 0).astype(int)  # Setosa = 1, Not setosa = 0
+
+# Train logistic regression
+model = LogisticRegression()
+model.fit(X, y)
+
+# Plotting
+plt.figure(figsize=(8, 6))
+
+# Create a meshgrid for plotting decision boundary
+x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+xx, yy = np.meshgrid(np.linspace(x_min, x_max, 500),
+                     np.linspace(y_min, y_max, 500))
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Draw decision boundary
+plt.contourf(xx, yy, Z, alpha=0.3, cmap=plt.cm.Paired)
+
+# Plot data points
+plt.scatter(X[y == 1][:, 0], X[y == 1][:, 1], color='green', label='Setosa')
+plt.scatter(X[y == 0][:, 0], X[y == 0][:, 1], color='red', label='Not Setosa')
+
+# Labels and title
+plt.xlabel("Petal Length (cm)")
+plt.ylabel("Petal Width (cm)")
+plt.title("Logistic Regression: Setosa vs Not Setosa")
+plt.legend()
+plt.grid(True)
+plt.show()
